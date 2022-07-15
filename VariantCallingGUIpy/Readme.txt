@@ -1,9 +1,10 @@
 Tkinter Variant calling GUI
---Prerequisite:Linux OS(tested on Ubuntu) and  CONDA (package and environment management system).
---Activate the given conda environment(viral.yml)
---run the GUI with command "python tkinterGUItest1.py"
+--Prerequisite:CONDA (package and environment management system).
+Procedure:
+--Run analysis.sh(bash analysis.sh) to install conda and activate GUI.
 --Select files and start the analysis.
---Track the progress and press "OK" options to move ahead 
+--Track the progress and press "OK" options to move ahead
+--Var folder is made in root folder(cd $HOME) which contains analysed files. ($HOME) folder) 
 SUMMARY WORKFLOW
 -Import modules like tkinter for GUI, subprocess for running linux commands and pathlib for filenames
 -Setup initial diretcory for analysis to work
@@ -12,4 +13,3 @@ SUMMARY WORKFLOW
 -variant call Function to start the analysis 
 -button to call the variant call function and start the analysis
 
-output Files will be stored in var variable in the home/user directory
