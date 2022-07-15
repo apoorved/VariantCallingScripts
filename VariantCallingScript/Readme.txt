@@ -13,6 +13,16 @@
 
 
 
+SETUP FOR WINDOWS:
+For computer running Windows 10 or 11:
 
+1) Open control panel,go to "Programs",
+ 2)click " Turn Windows feature on or off",
+3)Tick the option  "Windows Subsystem for Linux"
+4)"Let the system restart"
+5)"Download any linux distribution app like Ubuntu 18.04 /Ubuntu 20.04/Kali Linux etc from Microsoft store
+6)" Open the specific app"
+7)"Make your username and password for linux distribution
+8)" Install miniconda"  for the Linux distribution
 
  
