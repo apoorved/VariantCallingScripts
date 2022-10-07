@@ -1,4 +1,5 @@
-FROM ubuntu:22.04
+FROM ubuntu:22.04 as final
+FROM ubuntu:22.04 as base
 
 LABEL maintainer "Apoorv Mehrotra <apoorv11@live.com>"
 
@@ -18,7 +19,8 @@ RUN apt-get update -y \
     zlib1g-dev \
     make \
     dirmngr gnupg apt-transport-https software-properties-common \
-    git
+    git \
+    && rm -rf /var/lib/apt/lists/*
     
 RUN cd bin && \
     git clone https://github.com/BenLangmead/bowtie2.git && \ 
@@ -34,8 +36,24 @@ RUN cd /bin && \
     tar jxf bcftools-1.16.tar.bz2 && \
     cd bcftools-1.16 && ./configure && make install
 
+FROM final
+
+RUN apt-get update -y \
+    && apt-get install -y --no-install-recommends \
+    perl \
+    python3 \
+    libcurl4-gnutls-dev
+
+COPY --from=base /bin/bowtie2 /bin/bowtie2
+COPY --from=base /bin/samtools-1.16.1 /bin/samtools-1.16.1
+COPY --from=base /bin/bcftools-1.16 /bin/bcftools-1.16
+
 ENV PATH = "${PATH}:/bin/bowtie2/"
+ENV PATH = "${PATH}:/bin/samtools-1.16.1/"
+ENV PATH = "${PATH}:/bin/bcftools-1.16/"
+ENV PATH = "${PATH}:/bin/bcftools-1.16/misc"
 
 #Commands To Build and Run Container With Attached Local Directory
-#sudo docker build -t test3_app - < DockerFileTest3
-#sudo docker run -v PathOfdirectoryInLocal:PathOfDirectoryInDocker -it test3_app /bin/bash
+# sudo docker build -t test4_app - < DockerFile.test4
+# sudo docker run -v PathOfdirectoryInLocal:PathOfDirectoryInDocker -it test4_app /bin/bash
+
