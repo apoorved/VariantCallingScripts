@@ -33,9 +33,7 @@ RUN cd /bin && \
     cd bcftools-1.16 && ./configure && make install
 
 ENV PATH = "${PATH}:/bin/bowtie2/"
-ENV PATH = "${PATH}:/bin/samtools-1.16.1/"
-ENV PATH = "${PATH}:/bin/bcftools-1.16.1/"
 
-#Commands To Run Build and Run Container With Attached Local Directory
+#Commands To Build and Run Container With Attached Local Directory
 #sudo docker build -t test3_app - < DockerFileTest3
-#sudo docker run -v PathOfdirectoryInLocal:PathOfDirectoryInDocker -it test3_app /bin/bash
+#sudo docker run -v PathOfdirectoryInLocal:PathOfDirectoryInDocker -it test3_agpp /bin/bash
