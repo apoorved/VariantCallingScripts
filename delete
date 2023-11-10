@@ -1,0 +1,129 @@
+pub fn create_item(name: &str, price: f32) -> Item {
+    Item {
+        name: String::from(name),
+        price,
+    }
+}
+
+struct Item {
+    name: String,
+    price: f32,
+}
+
+// states.rs
+pub enum CoffeeShopState {
+    ReadyState,
+    OutOfStockState { item_name: String },
+}
+
+pub enum CoffeeShopAction {
+    Dispense(String),
+    DeductBalance(f32),
+    PrintInvalidChoice,
+    PrintOutOfStock(String),
+}
+
+pub fn ready_state(coffee_shop: &mut CoffeeShop, choice: u32) -> CoffeeShopAction {
+    match choice {
+        1 => {
+            println!("Espresso selected. Dispensing espresso.");
+            coffee_shop.balance -= coffee_shop.menu.espresso.price;
+            CoffeeShopAction::Dispense("Espresso".to_string())
+        }
+        2 => {
+            println!("Latte selected. Dispensing latte.");
+            coffee_shop.balance -= coffee_shop.menu.latte.price;
+            CoffeeShopAction::Dispense("Latte".to_string())
+        }
+        3 => {
+            println!("Cappuccino selected. Dispensing cappuccino.");
+            coffee_shop.balance -= coffee_shop.menu.cappuccino.price;
+            CoffeeShopAction::Dispense("Cappuccino".to_string())
+        }
+        _ => CoffeeShopAction::PrintInvalidChoice,
+    }
+}
+
+pub fn out_of_stock_state(item_name: &str) -> CoffeeShopAction {
+    CoffeeShopAction::PrintOutOfStock(item_name.to_string())
+}
+
+// api.rs
+pub struct CoffeeShop {
+    balance: f32,
+    menu: Menu,
+    state: CoffeeShopState,
+}
+
+struct Menu {
+    espresso: Item,
+    latte: Item,
+    cappuccino: Item,
+}
+
+impl CoffeeShop {
+    pub fn new() -> Self {
+        CoffeeShop {
+            balance: 0.0,
+            menu: Menu {
+                espresso: create_item("Espresso", 2.0),
+                latte: create_item("Latte", 3.0),
+                cappuccino: create_item("Cappuccino", 3.5),
+            },
+            state: CoffeeShopState::ReadyState,
+        }
+    }
+
+    pub fn display_menu(&self) {
+        println!("Menu:");
+        for item_name in self.menu.iter().map(|item| &item.name) {
+            println!("{}: ${}", item_name, self.menu.get(item_name).unwrap().price);
+        }
+        println!("\nBalance: {}", self.balance);
+    }
+
+    pub fn order_coffee(&mut self, choice: u32) {
+        match &self.state {
+            CoffeeShopState::ReadyState => {
+                let action = ready_state(self, choice);
+                match action {
+                    CoffeeShopAction::Dispense(item_name) => println!("Dispensing {}", item_name),
+                    CoffeeShopAction::DeductBalance(amount) => self.balance -= amount,
+                    CoffeeShopAction::PrintInvalidChoice => println!("Invalid choice. Please enter a valid option."),
+                    CoffeeShopAction::PrintOutOfStock(item_name) => println!("Sorry, {} is out of stock", item_name),
+                }
+            }
+            CoffeeShopState::OutOfStockState { item_name } => {
+                println!("{} is out of stock. Please select a different option.", item_name);
+            }
+        }
+    }
+}
+
+// Main loop
+fn main() {
+    let mut coffee_shop = CoffeeShop::new();
+
+    loop {
+        coffee_shop.display_menu();
+
+        let choice: u32 = match input("Select your coffee (1-3) or 0 to exit: ") {
+            Ok(num) => num,
+            Err(_) => {
+                println!("Invalid input. Please enter a number.");
+                continue;
+            }
+        };
+
+        if choice == 0 {
+            break;
+        }
+
+        coffee_shop.order_coffee(choice);
+    }
+}
+
+fn input(prompt: &str) -> Result<u32, std::io::Error> {
+    let mut input = String::new();
+    println!("{}", prompt);
+    std::io::stdin().read_
